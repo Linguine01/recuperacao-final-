@@ -63,7 +63,7 @@ No [Render](https://dashboard.render.com/), crie um **Web Service** ligado ao
 repositório, selecione o runtime **Python** e configure:
 
 - Build Command: `pip install -r requirements.txt`
-- Start Command: `gunicorn --bind 0.0.0.0:$PORT app:app`
+- Start Command: `gunicorn --no-control-socket --bind 0.0.0.0:$PORT app:app`
 - Health Check Path: `/health`
 - Environment: defina `SECRET_KEY` com um valor aleatório. Você pode gerar um
   com `python -c "import secrets; print(secrets.token_hex(32))"`.
