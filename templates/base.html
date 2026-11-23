@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block titulo %}Agenda{% endblock %} | MedTec</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <script defer src="{{ url_for('static', filename='forms.js') }}"></script>
+</head>
+<body>
+  <a class="skip" href="#conteudo">Pular para o conteúdo</a>
+  <header class="topbar">
+    <div class="wrap topbar-inner">
+      <a class="brand" href="{{ url_for('inicio') }}"><span class="mark" aria-hidden="true">+</span> MedTec</a>
+      <nav aria-label="Navegação principal">
+        <a href="{{ url_for('consultas.lista') }}"{% if request.blueprint == 'consultas' %} aria-current="true"{% endif %}>Agenda</a>
+        <a href="{{ url_for('pacientes.lista') }}"{% if request.blueprint == 'pacientes' %} aria-current="true"{% endif %}>Pacientes</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap" id="conteudo">
+    {% for tipo, mensagem in get_flashed_messages(with_categories=true) %}
+      <p class="alert {{ tipo }}" role="{{ 'alert' if tipo == 'erro' else 'status' }}">{{ mensagem }}</p>
+    {% endfor %}
+    {% block conteudo %}{% endblock %}
+  </main>
+  <footer class="wrap rodape">Projeto acadêmico · Use apenas dados fictícios.</footer>
+</body>
+</html>

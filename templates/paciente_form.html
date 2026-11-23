@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% set titulo = 'Editar paciente' if id else 'Novo paciente' %}
+{% block titulo %}{{ titulo }}{% endblock %}
+{% block conteudo %}
+  <a class="back" href="{{ url_for('pacientes.lista') }}">← Pacientes</a>
+  <div class="page-head"><h1>{{ titulo }}</h1></div>
+  <form class="panel editor" method="post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+    <label>Nome completo
+      <input name="nome" value="{{ paciente.nome }}" minlength="2" maxlength="100" required>
+    </label>
+    <div class="form-actions">
+      <button class="button primary" type="submit">Salvar paciente</button>
+      <a class="button" href="{{ url_for('pacientes.lista') }}">Cancelar</a>
+    </div>
+  </form>
+{% endblock %}

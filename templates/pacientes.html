@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block titulo %}Pacientes{% endblock %}
+{% block conteudo %}
+  <div class="page-head">
+    <div>
+      <h1>Pacientes</h1>
+      <p>Consulte e atualize os cadastros da clínica.</p>
+    </div>
+    <a class="button primary" href="{{ url_for('pacientes.formulario') }}"><span aria-hidden="true">+</span> Novo paciente</a>
+  </div>
+
+  <section class="panel" aria-label="Pacientes">
+    <form class="filters" method="get">
+      <label class="search">Nome do paciente<input type="search" name="q" value="{{ termo }}" maxlength="100" placeholder="Digite parte do nome"></label>
+      <button class="button" type="submit">Buscar</button>
+      {% if termo %}<a class="clear" href="{{ url_for('pacientes.lista') }}">Limpar</a>{% endif %}
+    </form>
+    {% if pacientes %}
+      <div class="table-scroll" tabindex="0" role="region" aria-label="Tabela de pacientes">
+        <table>
+          <thead><tr><th scope="col">Nome</th><th scope="col">Ações</th></tr></thead>
+          <tbody>
+            {% for paciente in pacientes %}
+              <tr>
+                <th scope="row">{{ paciente.nome }}</th>
+                <td class="actions">
+                  <a href="{{ url_for('pacientes.formulario', id=paciente.id) }}" aria-label="Editar {{ paciente.nome }}">Editar</a>
+                  <form method="post" action="{{ url_for('pacientes.excluir', id=paciente.id) }}" data-confirm="Excluir este paciente do cadastro?">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                    <button class="danger" type="submit" aria-label="Excluir {{ paciente.nome }}">Excluir</button>
+                  </form>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <div class="empty">
+        <h2>Nenhum paciente encontrado</h2>
+        <p>{{ 'Tente outro nome ou limpe a busca.' if termo else 'Cadastre um paciente para começar a usar a agenda.' }}</p>
+      </div>
+    {% endif %}
+  </section>
+{% endblock %}
