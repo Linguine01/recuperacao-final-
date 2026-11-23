@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% set titulo = 'Editar consulta' if id else 'Nova consulta' %}
+{% block titulo %}{{ titulo }}{% endblock %}
+{% block conteudo %}
+  <a class="back" href="{{ url_for('consultas.lista') }}">← Agenda</a>
+  <div class="page-head"><h1>{{ titulo }}</h1></div>
+  {% if pacientes %}
+    <form class="panel editor" method="post">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+      <label>Paciente
+        <select name="paciente_id" required>
+          <option value="">Selecione um paciente</option>
+          {% for paciente in pacientes %}
+            <option value="{{ paciente.id }}"{% if paciente.id | string == consulta.paciente_id | string %} selected{% endif %}>{{ paciente.nome }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <div class="field-grid">
+        <label>Data<input type="date" name="data" value="{{ consulta.data }}" required></label>
+        <label>Horário<input type="time" name="horario" value="{{ consulta.horario }}" required></label>
+      </div>
+      <label>Situação
+        <select name="status" required>
+          {% for valor, rotulo in status.items() %}
+            <option value="{{ valor }}"{% if valor == consulta.status %} selected{% endif %}>{{ rotulo }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <div class="form-actions">
+        <button class="button primary" type="submit">Salvar consulta</button>
+        <a class="button" href="{{ url_for('consultas.lista') }}">Cancelar</a>
+      </div>
+    </form>
+  {% else %}
+    <div class="panel empty">
+      <h2>Cadastre um paciente primeiro</h2>
+      <p>Cada consulta precisa estar vinculada a um paciente.</p>
+      <a class="button primary" href="{{ url_for('pacientes.formulario') }}">Cadastrar paciente</a>
+    </div>
+  {% endif %}
+{% endblock %}

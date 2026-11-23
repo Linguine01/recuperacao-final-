@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block titulo %}{{ 'Página indisponível' if error.code == 404 else 'Solicitação inválida' }}{% endblock %}
+{% block conteudo %}
+  <div class="panel empty">
+    <h1>{{ 'Página indisponível' if error.code == 404 else 'Solicitação inválida' }}</h1>
+    <p>{{ 'A página ou o registro solicitado não foi encontrado.' if error.code == 404 else error.description }}</p>
+    <a class="button primary" href="{{ url_for('inicio') }}">Voltar à agenda</a>
+  </div>
+{% endblock %}

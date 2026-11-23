@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block conteudo %}
+  <div class="page-head">
+    <div>
+      <h1>Agenda de consultas</h1>
+      <p>Organize os atendimentos da clínica.</p>
+    </div>
+    <a class="button primary" href="{{ url_for('consultas.formulario') }}"><span aria-hidden="true">+</span> Nova consulta</a>
+  </div>
+
+  <section class="panel" aria-label="Consultas">
+    <form class="filters" method="get">
+      <label>Data da consulta<input type="date" name="data" value="{{ data }}"></label>
+      <label>Situação
+        <select name="status">
+          <option value="">Todas</option>
+          {% for valor, rotulo in status.items() %}
+            <option value="{{ valor }}"{% if valor == filtro %} selected{% endif %}>{{ rotulo }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <button class="button" type="submit">Filtrar</button>
+      {% if data or filtro %}<a class="clear" href="{{ url_for('consultas.lista') }}">Limpar</a>{% endif %}
+    </form>
+    {% if consultas %}
+      <div class="table-scroll" tabindex="0" role="region" aria-label="Tabela de consultas">
+        <table>
+          <thead><tr><th scope="col">Paciente</th><th scope="col">Data</th><th scope="col">Horário</th><th scope="col">Situação</th><th scope="col">Ações</th></tr></thead>
+          <tbody>
+            {% for consulta in consultas %}
+              <tr>
+                <th scope="row">{{ consulta.paciente }}</th>
+                <td>{{ consulta.data | data_br }}</td>
+                <td>{{ consulta.horario }}</td>
+                <td><span class="status {{ consulta.status }}">{{ status[consulta.status] }}</span></td>
+                <td class="actions">
+                  <a href="{{ url_for('consultas.formulario', id=consulta.id) }}" aria-label="Editar consulta de {{ consulta.paciente }}">Editar</a>
+                  <form method="post" action="{{ url_for('consultas.excluir', id=consulta.id) }}" data-confirm="Excluir esta consulta da agenda?">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                    <button class="danger" type="submit" aria-label="Excluir consulta de {{ consulta.paciente }}">Excluir</button>
+                  </form>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <div class="empty">
+        <h2>Nenhuma consulta encontrada</h2>
+        {% if data or filtro %}
+          <p>Altere os filtros ou limpe a busca para visualizar a agenda completa.</p>
+        {% else %}
+          <p>Cadastre um paciente e agende o primeiro atendimento.</p>
+          <a class="clear" href="{{ url_for('pacientes.formulario') }}">Cadastrar paciente</a>
+        {% endif %}
+      </div>
+    {% endif %}
+  </section>
+{% endblock %}
